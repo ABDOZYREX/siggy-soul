@@ -1,0 +1,203 @@
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+@source "../src";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ember: var(--ember);
+  --color-ember-glow: var(--ember-glow);
+  --font-rune: var(--font-rune);
+  --font-display: var(--font-display);
+}
+
+
+:root {
+  --radius: 0.25rem;
+
+  /* Obsidian black */
+  --background: oklch(0.12 0.015 150);
+  --foreground: oklch(0.92 0.06 150);
+
+  --card: oklch(0.16 0.02 150);
+  --card-foreground: oklch(0.92 0.06 150);
+  --popover: oklch(0.14 0.02 150);
+  --popover-foreground: oklch(0.92 0.06 150);
+
+  /* Emerald candle green */
+  --primary: oklch(0.78 0.22 145);
+  --primary-foreground: oklch(0.1 0.02 150);
+  --ember: oklch(0.78 0.22 145);
+  --ember-glow: oklch(0.88 0.25 140);
+
+  --secondary: oklch(0.2 0.03 150);
+  --secondary-foreground: oklch(0.85 0.1 145);
+  --muted: oklch(0.18 0.02 150);
+  --muted-foreground: oklch(0.55 0.05 145);
+  --accent: oklch(0.25 0.08 145);
+  --accent-foreground: oklch(0.92 0.15 145);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.3 0.08 145 / 0.4);
+  --input: oklch(0.25 0.05 145 / 0.5);
+  --ring: oklch(0.78 0.22 145);
+
+  --font-display: 'Cinzel', serif;
+  --font-rune: 'UnifrakturMaguntia', serif;
+
+  --gradient-mist: radial-gradient(ellipse at center, oklch(0.25 0.12 145 / 0.35), transparent 70%);
+  --gradient-frame: linear-gradient(135deg, oklch(0.78 0.22 145 / 0.6), oklch(0.4 0.15 145 / 0.2));
+  --shadow-ember: 0 0 40px oklch(0.78 0.22 145 / 0.5), 0 0 80px oklch(0.78 0.22 145 / 0.25);
+  --shadow-deep: 0 30px 80px -20px oklch(0 0 0 / 0.9);
+}
+
+.dark {
+  --background: oklch(0.12 0.015 150);
+  --foreground: oklch(0.92 0.06 150);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-display);
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .font-rune { font-family: var(--font-rune); letter-spacing: 0.05em; }
+  .font-display { font-family: var(--font-display); }
+  .font-mono-tech { font-family: 'Share Tech Mono', monospace; }
+
+  .text-glow {
+    text-shadow: 0 0 10px oklch(0.78 0.22 145 / 0.8), 0 0 30px oklch(0.78 0.22 145 / 0.5);
+  }
+
+  .border-glow {
+    box-shadow: 0 0 12px oklch(0.78 0.22 145 / 0.5), inset 0 0 12px oklch(0.78 0.22 145 / 0.15);
+  }
+
+  .border-glow-strong {
+    box-shadow: var(--shadow-ember), inset 0 0 20px oklch(0.78 0.22 145 / 0.2);
+  }
+
+  .mist-bg {
+    background: var(--gradient-mist);
+  }
+
+  .ornate-frame {
+    background: var(--gradient-frame);
+    padding: 2px;
+  }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  10% { opacity: 0.85; filter: brightness(1.1); }
+  20% { opacity: 1; filter: brightness(0.95); }
+  35% { opacity: 0.92; filter: brightness(1.05); }
+  50% { opacity: 1; filter: brightness(1); }
+  65% { opacity: 0.88; filter: brightness(1.15); }
+  80% { opacity: 1; filter: brightness(0.9); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-20px) translateX(10px); }
+}
+
+@keyframes smoke {
+  0% { transform: translateY(0) scale(1); opacity: 0.4; }
+  50% { transform: translateY(-30px) scale(1.1); opacity: 0.6; }
+  100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
+}
+
+.animate-flicker { animation: flicker 3s infinite ease-in-out; }
+.animate-drift { animation: drift 6s infinite ease-in-out; }
+
+@keyframes title-fire {
+  0%, 100% { filter: drop-shadow(0 0 12px oklch(0.85 0.25 145 / 0.85)) brightness(1.05); }
+  50% { filter: drop-shadow(0 0 24px oklch(0.95 0.28 140 / 1)) brightness(1.2); }
+}
+
+.title-fire {
+  animation: title-fire 1.8s ease-in-out infinite;
+  will-change: filter;
+}
+
+@keyframes lightning {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  10% { opacity: 0.2; }
+  15% { opacity: 1; }
+  25% { opacity: 0.4; }
+  35% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+.animate-lightning {
+  animation: lightning 0.7s ease-out forwards;
+  transform: translate3d(0, 0, 0);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+/* Lightning flash overlay: hardware-accelerated opacity transition */
+.lightning-flash-overlay {
+  will-change: opacity;
+  transition: opacity 120ms ease-out;
+}
+
+
+@keyframes rain {
+  0% { transform: translate3d(0, -10vh, 0); }
+  100% { transform: translate3d(0, 120vh, 0); }
+}
+
+.animate-rain {
+  animation-name: rain;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@keyframes nft-struck {
+  0% { filter: brightness(1) drop-shadow(0 0 0 transparent); transform: translate3d(0,0,0); }
+  20% { filter: brightness(2.2) saturate(1.6) drop-shadow(0 0 28px oklch(0.95 0.25 145 / 0.95)); transform: translate3d(-2px, 1px, 0); }
+  40% { filter: brightness(1.4) drop-shadow(0 0 18px oklch(0.9 0.22 145 / 0.8)); transform: translate3d(2px, -1px, 0); }
+  60% { filter: brightness(1.8) drop-shadow(0 0 22px oklch(0.95 0.25 145 / 0.9)); transform: translate3d(-1px, 2px, 0); }
+  100% { filter: brightness(1) drop-shadow(0 0 0 transparent); transform: translate3d(0,0,0); }
+}
+
+.nft-struck {
+  animation: nft-struck 0.22s ease-out;
+}
