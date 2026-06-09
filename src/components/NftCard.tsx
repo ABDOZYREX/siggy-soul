@@ -85,10 +85,10 @@ export function NftCard({
 
         {!reducedEffects && (
           <>
-            <div className="absolute bottom-0 left-0 -translate-x-[72%] pointer-events-none z-10 origin-bottom">
+            <div className="absolute bottom-[2px] left-0 -translate-x-[92%] pointer-events-none z-10 origin-bottom">
               <Candle delay={0.2} scale={1} />
             </div>
-            <div className="absolute bottom-0 right-0 translate-x-[72%] pointer-events-none z-10 origin-bottom">
+            <div className="absolute bottom-[2px] right-0 translate-x-[92%] pointer-events-none z-10 origin-bottom">
               <Candle delay={0.7} scale={1} />
             </div>
           </>

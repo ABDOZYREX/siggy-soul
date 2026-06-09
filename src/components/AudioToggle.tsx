@@ -3,6 +3,7 @@ import { Volume2, VolumeX } from "lucide-react";
 
 const AUDIO_URL =
   "https://gateway.pinata.cloud/ipfs/bafybeid54kwdlvz4xbk33nka3fbtrfz4f3niok7p6yhryezixtx5vaacui";
+const AUDIO_PREF_KEY = "siggy-soul-audio-enabled";
 
 export function AudioToggle() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -25,6 +26,8 @@ export function AudioToggle() {
   useEffect(() => {
     const audio = ensureAudio();
     let interactionArmed = true;
+    const storedPreference =
+      typeof window !== "undefined" ? window.localStorage.getItem(AUDIO_PREF_KEY) : null;
 
     const syncEnabled = () => {
       setEnabled(!audio.paused && !audio.muted);
@@ -34,6 +37,9 @@ export function AudioToggle() {
       if (!interactionArmed) return;
       interactionArmed = false;
       window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("mousemove", handleFirstInteraction);
+      window.removeEventListener("wheel", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
       window.removeEventListener("touchstart", handleFirstInteraction);
     };
@@ -43,10 +49,14 @@ export function AudioToggle() {
         if (bootstrapMuted) {
           audio.muted = true;
           await audio.play();
-          audio.muted = false;
         } else {
           audio.muted = false;
           await audio.play();
+          try {
+            window.localStorage.setItem(AUDIO_PREF_KEY, "true");
+          } catch {
+            /* ignore */
+          }
         }
 
         syncEnabled();
@@ -66,8 +76,11 @@ export function AudioToggle() {
     audio.addEventListener("pause", syncEnabled);
     audio.addEventListener("volumechange", syncEnabled);
 
-    void startPlayback(true);
+    void startPlayback(storedPreference !== "true");
     window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
+    window.addEventListener("mousemove", handleFirstInteraction, { passive: true });
+    window.addEventListener("wheel", handleFirstInteraction, { passive: true });
+    window.addEventListener("scroll", handleFirstInteraction, { passive: true });
     window.addEventListener("keydown", handleFirstInteraction);
     window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
 
@@ -86,12 +99,27 @@ export function AudioToggle() {
 
     if (!audio.paused) {
       audio.pause();
+      try {
+        window.localStorage.setItem(AUDIO_PREF_KEY, "false");
+      } catch {
+        /* ignore */
+      }
       setEnabled(false);
       return;
     }
 
     audio.muted = false;
-    audio.play().then(() => setEnabled(true)).catch(() => setEnabled(false));
+    audio
+      .play()
+      .then(() => {
+        try {
+          window.localStorage.setItem(AUDIO_PREF_KEY, "true");
+        } catch {
+          /* ignore */
+        }
+        setEnabled(true);
+      })
+      .catch(() => setEnabled(false));
   }, [ensureAudio]);
 
   return (

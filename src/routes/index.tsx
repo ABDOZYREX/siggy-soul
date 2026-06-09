@@ -11,6 +11,7 @@ import { Rain } from "@/components/Rain";
 import { NftCard } from "@/components/NftCard";
 import { Download } from "lucide-react";
 import { AudioToggle } from "@/components/AudioToggle";
+import { SignatureDialog } from "@/components/SignatureDialog";
 import { shouldReduceEffects } from "@/lib/performance";
 
 const CONTRACT_ADDRESS = "0xcf7BCB8552437BadA08B89f86428ab08b4ece3A8" as const;
@@ -179,8 +180,8 @@ function Index() {
       {!reducedEffects && <Rain />}
       <Lightning lite />
 
-      <header className="relative z-20 flex items-center justify-between px-6 py-6 md:px-12">
-        <div className="flex items-center gap-3">
+      <header className="relative z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-6 py-6 md:px-12">
+        <div className="flex items-center gap-3 justify-self-start min-w-0">
           <img
             src={ritualLogo}
             alt="Ritual logo"
@@ -194,7 +195,9 @@ function Index() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <SignatureDialog />
+
+        <div className="flex items-center gap-3 justify-self-end">
           <AudioToggle />
           <ConnectButton
             chainStatus="icon"

@@ -222,14 +222,14 @@
 }
 
 @keyframes candle-halo {
-  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-  50% { opacity: 0.82; transform: translateX(-50%) scale(1.06); }
+  0%, 100% { opacity: 0.32; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.44; transform: translateX(-50%) scale(1.03); }
 }
 
 @keyframes candle-flame {
-  0%, 100% { opacity: 0.95; transform: translateX(-50%) scale(1, 1); }
-  30% { opacity: 1; transform: translateX(-50%) scale(0.96, 1.12); }
-  60% { opacity: 0.86; transform: translateX(-50%) scale(1.04, 0.92); }
+  0%, 100% { opacity: 0.82; transform: translateX(-50%) scale(1, 1); }
+  30% { opacity: 0.88; transform: translateX(-50%) scale(0.98, 1.06); }
+  60% { opacity: 0.74; transform: translateX(-50%) scale(1.02, 0.96); }
 }
 
 .candle-halo {
