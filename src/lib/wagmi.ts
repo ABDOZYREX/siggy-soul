@@ -23,9 +23,9 @@ const connectors = connectorsForWallets(
     {
       groupName: "Wallets",
       wallets: [
-        injectedWallet(),
-        metaMaskWallet({ projectId }),
-        walletConnectWallet({ projectId }),
+        injectedWallet,
+        metaMaskWallet,
+        walletConnectWallet,
       ],
     },
   ],
