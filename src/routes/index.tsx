@@ -177,7 +177,7 @@ function Index() {
       />
       {!reducedEffects && <Smoke />}
       {!reducedEffects && <Rain />}
-      {!reducedEffects && <Lightning />}
+      <Lightning lite={reducedEffects} />
 
       <header className="relative z-20 flex items-center justify-between px-6 py-6 md:px-12">
         <div className="flex items-center gap-3">

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { shouldReduceEffects } from "@/lib/performance";
 
 type Bolt = {
   id: number;
@@ -41,21 +40,39 @@ function jaggedPath(
   return { d, points };
 }
 
-function makeStrike(target: DOMRect): Bolt | null {
+type Props = {
+  lite?: boolean;
+};
+
+type NavigatorWithHints = Navigator & {
+  connection?: {
+    saveData?: boolean;
+  };
+};
+
+function makeStrike(target: DOMRect, lite: boolean): Bolt | null {
   const tx = target.left + target.width * (0.2 + Math.random() * 0.6);
   const ty = target.top + target.height * (0.2 + Math.random() * 0.6);
 
-  const drift = (Math.random() - 0.5) * Math.min(window.innerWidth * 0.4, 420);
+  const drift = (Math.random() - 0.5) * Math.min(window.innerWidth * (lite ? 0.24 : 0.4), lite ? 240 : 420);
   const sx = tx + drift;
   const sy = -30 - Math.random() * 60;
 
-  const minX = Math.min(sx, tx) - 80;
-  const minY = Math.min(sy, ty) - 80;
-  const maxX = Math.max(sx, tx) + 80;
-  const maxY = Math.max(sy, ty) + 80;
+  const pad = lite ? 36 : 80;
+  const minX = Math.min(sx, tx) - pad;
+  const minY = Math.min(sy, ty) - pad;
+  const maxX = Math.max(sx, tx) + pad;
+  const maxY = Math.max(sy, ty) + pad;
   const width = maxX - minX;
   const height = maxY - minY;
-  const main = jaggedPath(sx - minX, sy - minY, tx - minX, ty - minY, 6, 42);
+  const main = jaggedPath(
+    sx - minX,
+    sy - minY,
+    tx - minX,
+    ty - minY,
+    lite ? 4 : 6,
+    lite ? 20 : 42,
+  );
 
   return {
     id: Math.random(),
@@ -68,13 +85,20 @@ function makeStrike(target: DOMRect): Bolt | null {
   };
 }
 
-export function Lightning() {
+export function Lightning({ lite = false }: Props) {
   const [bolts, setBolts] = useState<Bolt[]>([]);
+  const [liteMode, setLiteMode] = useState(lite);
   const flashRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const nav = window.navigator as NavigatorWithHints;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const saveData = Boolean(nav.connection?.saveData);
+    if (reduceMotion || saveData) return;
+
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (shouldReduceEffects() || isMobile) return;
+    const useLite = lite || isMobile;
+    setLiteMode(useLite);
 
     let mounted = true;
     const timers: number[] = [];
@@ -84,20 +108,20 @@ export function Lightning() {
       if (targets.length === 0) return;
       const target = targets[Math.floor(Math.random() * targets.length)];
       const rect = target.getBoundingClientRect();
-      const bolt = makeStrike(rect);
+      const bolt = makeStrike(rect, useLite);
 
       if (bolt) {
         setBolts((prev) => [...prev, bolt]);
         timers.push(
           window.setTimeout(() => {
             if (mounted) setBolts((prev) => prev.filter((b) => b.id !== bolt.id));
-          }, 380),
+          }, useLite ? 220 : 380),
         );
       }
 
       const flash = flashRef.current;
       if (flash) {
-        flash.style.opacity = "0.45";
+        flash.style.opacity = useLite ? "0.18" : "0.45";
         timers.push(
           window.setTimeout(() => {
             if (flash) flash.style.opacity = "0";
@@ -116,16 +140,16 @@ export function Lightning() {
       }
 
       fireOnce();
-      timers.push(window.setTimeout(trigger, 7000 + Math.random() * 6000));
+      timers.push(window.setTimeout(trigger, useLite ? 12000 + Math.random() * 7000 : 7000 + Math.random() * 6000));
     };
 
-    timers.push(window.setTimeout(trigger, 3000));
+    timers.push(window.setTimeout(trigger, useLite ? 4500 : 3000));
 
     return () => {
       mounted = false;
       timers.forEach(clearTimeout);
     };
-  }, []);
+  }, [lite]);
 
   return (
     <>
@@ -152,22 +176,22 @@ export function Lightning() {
             style={{
               left: bolt.left,
               top: bolt.top,
-              filter: "drop-shadow(0 0 8px oklch(0.9 0.25 145 / 0.95))",
+              filter: liteMode ? "none" : "drop-shadow(0 0 8px oklch(0.9 0.25 145 / 0.95))",
             }}
           >
             <path
               d={bolt.d}
               stroke="oklch(0.78 0.22 145)"
-              strokeWidth={4}
+              strokeWidth={liteMode ? 2.2 : 4}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity="0.42"
+              opacity={liteMode ? 0.28 : 0.42}
             />
             <path
               d={bolt.d}
               stroke="oklch(0.99 0.18 145)"
-              strokeWidth={1.2}
+              strokeWidth={liteMode ? 0.9 : 1.2}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
