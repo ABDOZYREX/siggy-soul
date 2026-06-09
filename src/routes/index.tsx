@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { parseEther } from "viem";
 import { toast } from "sonner";
 import { Smoke } from "@/components/Smoke";
@@ -12,6 +11,7 @@ import { Rain } from "@/components/Rain";
 import { NftCard } from "@/components/NftCard";
 import { Download } from "lucide-react";
 import { AudioToggle } from "@/components/AudioToggle";
+import { shouldReduceEffects } from "@/lib/performance";
 
 const CONTRACT_ADDRESS = "0xcf7BCB8552437BadA08B89f86428ab08b4ece3A8" as const;
 const MINT_PRICE = "0.0001";
@@ -66,15 +66,20 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { isConnected, address } = useAccount();
-  const { writeContract, data: hash, isPending, reset, variables } = useWriteContract();
+  const { writeContract, data: hash, isPending, reset } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const [pendingNft, setPendingNft] = useState<Nft | null>(null);
   const [successNft, setSuccessNft] = useState<Nft | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [mintedMap, setMintedMap] = useState<Record<string, boolean>>({});
+  const [reducedEffects, setReducedEffects] = useState(false);
 
   const storageKey = address ? `siggy-soul-minted:${address.toLowerCase()}` : null;
+
+  useEffect(() => {
+    setReducedEffects(shouldReduceEffects());
+  }, []);
 
   useEffect(() => {
     if (!storageKey) {
@@ -89,38 +94,42 @@ function Index() {
     }
   }, [storageKey]);
 
-  const hasMinted = (nft: Nft) => Boolean(mintedMap[nft.id]);
-
   useEffect(() => {
-    if (isSuccess && pendingNft) {
-      setSuccessNft(pendingNft);
-      setShowSuccess(true);
-      toast.success(`Minted ${pendingNft.name}!`);
-      if (storageKey) {
-        setMintedMap((prev) => {
-          const next = { ...prev, [pendingNft.id]: true };
-          try {
-            localStorage.setItem(storageKey, JSON.stringify(next));
-          } catch {
-            /* ignore */
-          }
-          return next;
-        });
-      }
-      setPendingNft(null);
-      reset();
+    if (!isSuccess || !pendingNft) return;
+
+    setSuccessNft(pendingNft);
+    setShowSuccess(true);
+    toast.success(`Minted ${pendingNft.name}!`);
+
+    if (storageKey) {
+      setMintedMap((prev) => {
+        const next = { ...prev, [pendingNft.id]: true };
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(next));
+        } catch {
+          /* ignore */
+        }
+        return next;
+      });
     }
+
+    setPendingNft(null);
+    reset();
   }, [isSuccess, pendingNft, reset, storageKey]);
+
+  const hasMinted = (nft: Nft) => Boolean(mintedMap[nft.id]);
 
   const handleMint = (nft: Nft) => {
     if (!isConnected) {
       toast.error("Connect your wallet first");
       return;
     }
+
     if (hasMinted(nft)) {
       toast.error("Your wallet has already completed this ritual. Only one soul per wallet is permitted.");
       return;
     }
+
     setPendingNft(nft);
     writeContract(
       {
@@ -131,8 +140,8 @@ function Index() {
       },
       {
         onSuccess: () => toast.success(`${nft.name}: transaction submitted`),
-        onError: (e) => {
-          toast.error(e.message.split("\n")[0] ?? "Mint failed");
+        onError: (error) => {
+          toast.error(error.message.split("\n")[0] ?? "Mint failed");
           setPendingNft(null);
         },
       },
@@ -148,20 +157,16 @@ function Index() {
     return "MINT";
   };
 
-  const busyFor = (nft: Nft) =>
-    pendingNft?.id === nft.id && (isPending || isConfirming);
-
+  const busyFor = (nft: Nft) => pendingNft?.id === nft.id && (isPending || isConfirming);
   const disabledFor = (nft: Nft) => hasMinted(nft);
 
   const shareText = successNft
-    ? `I just minted ${successNft.name} from the Siggy Soul collection on @RitualNet Testnet! 🚀 #Ritual #NFT #SiggySoul`
+    ? `I just minted ${successNft.name} from the Siggy Soul collection on @RitualNet Testnet! #Ritual #NFT #SiggySoul`
     : "";
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
-  void variables;
-
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="absolute inset-0 mist-bg" />
       <div
         className="absolute inset-0 opacity-40"
@@ -170,12 +175,11 @@ function Index() {
             "radial-gradient(ellipse at 20% 30%, oklch(0.3 0.15 145 / 0.3), transparent 50%), radial-gradient(ellipse at 80% 70%, oklch(0.3 0.15 145 / 0.25), transparent 50%)",
         }}
       />
-      <Smoke />
-      <Rain />
-      <Lightning />
+      {!reducedEffects && <Smoke />}
+      {!reducedEffects && <Rain />}
+      {!reducedEffects && <Lightning />}
 
-      {/* Header */}
-      <header className="relative z-20 flex items-center justify-between px-6 md:px-12 py-6">
+      <header className="relative z-20 flex items-center justify-between px-6 py-6 md:px-12">
         <div className="flex items-center gap-3">
           <img
             src={ritualLogo}
@@ -200,30 +204,24 @@ function Index() {
         </div>
       </header>
 
-      {/* Main */}
-      <main className="relative z-10 px-6 md:px-12 pb-24 max-w-7xl mx-auto">
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2 }}
-          className="text-center mt-8 md:mt-14"
-        >
-          <p className="font-mono-tech text-xs tracking-[0.5em] text-primary/70 mb-4">
-            — RITUAL TESTNET COLLECTION —
+      <main className="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-12">
+        <div className="intro-fade-up text-center mt-8 md:mt-14">
+          <p className="font-mono-tech mb-4 text-xs tracking-[0.5em] text-primary/70">
+            -- RITUAL TESTNET COLLECTION --
           </p>
-          <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-wider text-primary title-fire">
+          <h1 className={`font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-wider text-primary ${reducedEffects ? "" : "title-fire"}`}>
             SIGGY SOUL
           </h1>
-        </motion.div>
+        </div>
 
-        {/* Top NFT */}
-        <div className="mt-14 md:mt-20 flex justify-center">
+        <div className="mt-14 flex justify-center md:mt-20">
           <NftCard
             id={NFTS.top.id}
             name={NFTS.top.name}
             image={NFTS.top.image}
-            size="lg"
+            priority
+            reducedEffects={reducedEffects}
+            revealDelayMs={100}
             busy={busyFor(NFTS.top)}
             disabled={disabledFor(NFTS.top)}
             buttonLabel={labelFor(NFTS.top)}
@@ -231,12 +229,13 @@ function Index() {
           />
         </div>
 
-        {/* Bottom row */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20 justify-items-center">
+        <div className="mt-20 grid grid-cols-1 justify-items-center gap-14 md:grid-cols-2 md:gap-20">
           <NftCard
             id={NFTS.left.id}
             name={NFTS.left.name}
             image={NFTS.left.image}
+            reducedEffects={reducedEffects}
+            revealDelayMs={180}
             busy={busyFor(NFTS.left)}
             disabled={disabledFor(NFTS.left)}
             buttonLabel={labelFor(NFTS.left)}
@@ -246,6 +245,8 @@ function Index() {
             id={NFTS.right.id}
             name={NFTS.right.name}
             image={NFTS.right.image}
+            reducedEffects={reducedEffects}
+            revealDelayMs={260}
             busy={busyFor(NFTS.right)}
             disabled={disabledFor(NFTS.right)}
             buttonLabel={labelFor(NFTS.right)}
@@ -253,18 +254,11 @@ function Index() {
           />
         </div>
 
-        {/* Footer quote */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.4 }}
-          className="mt-24 text-center font-display italic text-lg md:text-xl text-muted-foreground"
-        >
-          "Evrey soul must join the ritual."
-        </motion.p>
+        <p className="intro-fade mt-24 text-center font-display italic text-lg text-muted-foreground md:text-xl">
+          "Every soul must join the ritual."
+        </p>
       </main>
 
-      {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
         <DialogContent className="border-glow-strong bg-background max-w-2xl p-8 md:p-12">
           <DialogHeader className="space-y-4">
@@ -284,7 +278,7 @@ function Index() {
                 alt={successNft.name}
                 loading="lazy"
                 decoding="async"
-                className="w-80 h-80 md:w-96 md:h-96 object-cover"
+                className="w-80 h-80 object-cover md:w-96 md:h-96"
                 style={{
                   boxShadow:
                     "0 0 40px oklch(0.78 0.22 145 / 0.7), 0 0 80px oklch(0.78 0.22 145 / 0.5)",
@@ -292,12 +286,12 @@ function Index() {
               />
             </div>
           )}
-          <div className="mt-4 flex flex-col sm:flex-row gap-4 justify-center items-stretch">
+          <div className="mt-4 flex flex-col items-stretch justify-center gap-4 sm:flex-row">
             <a
               href={shareUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 px-8 py-5 font-display font-black tracking-[0.3em] text-base md:text-xl text-background bg-primary border-glow-strong hover:opacity-90 transition-opacity"
+              className="inline-flex items-center justify-center gap-3 px-8 py-5 font-display font-black tracking-[0.3em] text-base text-background bg-primary border-glow-strong transition-opacity hover:opacity-90 md:text-xl"
             >
               SHARE ON X
             </a>
@@ -309,18 +303,18 @@ function Index() {
                   const res = await fetch(successNft.image);
                   const blob = await res.blob();
                   const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `${successNft.name.replace(/\s+/g, "_")}_Siggy_Soul.jpg`;
-                  document.body.appendChild(a);
-                  a.click();
-                  a.remove();
+                  const anchor = document.createElement("a");
+                  anchor.href = url;
+                  anchor.download = `${successNft.name.replace(/\s+/g, "_")}_Siggy_Soul.jpg`;
+                  document.body.appendChild(anchor);
+                  anchor.click();
+                  anchor.remove();
                   URL.revokeObjectURL(url);
                 } catch {
                   toast.error("Download failed");
                 }
               }}
-              className="inline-flex items-center justify-center gap-3 px-8 py-5 font-display font-black tracking-[0.3em] text-base md:text-xl text-primary bg-transparent border-2 border-primary border-glow-strong hover:bg-primary hover:text-background transition-colors"
+              className="inline-flex items-center justify-center gap-3 px-8 py-5 font-display font-black tracking-[0.3em] text-base text-primary bg-transparent border-2 border-primary border-glow-strong transition-colors hover:bg-primary hover:text-background md:text-xl"
             >
               <Download className="w-5 h-5" />
               DOWNLOAD NFT
@@ -329,9 +323,8 @@ function Index() {
         </DialogContent>
       </Dialog>
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center pb-8 font-mono-tech text-sm md:text-base tracking-[0.4em] text-muted-foreground/80 uppercase">
-        ⛧ Made by <span className="normal-case">LiTEino</span> ⛧
+      <footer className="relative z-10 pb-8 text-center font-mono-tech text-sm text-muted-foreground/80 uppercase tracking-[0.4em] md:text-base">
+        Made by <span className="normal-case">LiTEino</span>
       </footer>
     </div>
   );

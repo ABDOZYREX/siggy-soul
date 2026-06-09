@@ -1,5 +1,9 @@
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { injectedWallet, metaMaskWallet, walletConnectWallet } from "@rainbow-me/rainbowkit/wallets";
 import { defineChain } from "viem";
+import { createConfig, http } from "wagmi";
+
+const projectId = "ritual_genesis_demo";
 
 export const ritualTestnet = defineChain({
   id: 1979,
@@ -14,9 +18,28 @@ export const ritualTestnet = defineChain({
   testnet: true,
 });
 
-export const wagmiConfig = getDefaultConfig({
-  appName: "Siggy Soul",
-  projectId: "ritual_genesis_demo",
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: "Wallets",
+      wallets: [
+        injectedWallet(),
+        metaMaskWallet({ projectId }),
+        walletConnectWallet({ projectId }),
+      ],
+    },
+  ],
+  {
+    appName: "Siggy Soul",
+    projectId,
+  },
+);
+
+export const wagmiConfig = createConfig({
   chains: [ritualTestnet],
+  connectors,
   ssr: true,
+  transports: {
+    [ritualTestnet.id]: http(ritualTestnet.rpcUrls.default.http[0]),
+  },
 });
