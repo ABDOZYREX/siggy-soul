@@ -1,0 +1,5 @@
+[31mfailed to load config from C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\vite.config.ts[39m
+[2m01:26:10[22m [31m[1m[vite][22m[39m Cannot find module 'ajv/dist/compile/codegen'
+Require stack:
+- C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\node_modules\ajv-errors\dist\index.js
+[2m01:26:10[22m [31m[1m[vite][22m[39m server restart failed

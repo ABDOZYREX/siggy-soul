@@ -1,0 +1,27 @@
+[2m02:50:02[22m [31m[1m[vite][22m[39m ⬥ Netlify An error occurred while setting up the Netlify Edge Functions environment: TypeError: fetch failed
+TypeError: createWallet is not a function
+    at connectorsForWallets (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/@rainbow-me/rainbowkit/dist/index.js:6975:22)
+    ... 8 lines matching cause stack trace ...
+    at async eval (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\routes\__root.tsx:12:1) {
+  cause: TypeError: createWallet is not a function
+      at connectorsForWallets (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/@rainbow-me/rainbowkit/dist/index.js:6975:22)
+      at eval (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\lib\wagmi.ts:21:20)
+      at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:913:3)
+      at async ModuleRunner.directRequest (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:1146:59)
+      at async ModuleRunner.cachedRequest (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:1053:73)
+      at async eval (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\components\Web3Provider.tsx:4:1)
+      at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:913:3)
+      at async ModuleRunner.directRequest (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:1146:59)
+      at async ModuleRunner.cachedRequest (file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/vite/dist/node/module-runner.js:1053:73)
+      at async eval (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\routes\__root.tsx:12:1),
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+Error: h3 swallowed SSR error: {"status":500,"unhandled":true,"message":"HTTPError"}
+    at normalizeCatastrophicSsrResponse (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\server.ts:65:47)
+    at async Object.fetch (C:\Users\SetupGame\Documents\Codex\2026-06-09\netfliy\work\siggy-soul-main\src\server.ts:74:14)
+    at async file:///C:/Users/SetupGame/Documents/Codex/2026-06-09/netfliy/work/siggy-soul-main/node_modules/@tanstack/start-plugin-core/dist/esm/vite/dev-server-plugin/plugin.js:79:36

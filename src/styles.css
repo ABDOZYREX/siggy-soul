@@ -125,9 +125,9 @@
   .card-aura {
     position: absolute;
     left: 50%;
-    top: 48%;
-    width: 118%;
-    height: 104%;
+    top: 50%;
+    width: 112%;
+    height: 100%;
     transform: translate(-50%, -50%);
     border-radius: 9999px;
     background: radial-gradient(circle, oklch(0.78 0.22 145 / 0.24) 0%, oklch(0.78 0.22 145 / 0.12) 34%, transparent 72%);
