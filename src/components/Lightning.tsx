@@ -121,7 +121,7 @@ export function Lightning({ lite = false }: Props) {
 
       const flash = flashRef.current;
       if (flash) {
-        flash.style.opacity = useLite ? "0.18" : "0.45";
+        flash.style.opacity = useLite ? "0.08" : "0.45";
         timers.push(
           window.setTimeout(() => {
             if (flash) flash.style.opacity = "0";
@@ -140,10 +140,10 @@ export function Lightning({ lite = false }: Props) {
       }
 
       fireOnce();
-      timers.push(window.setTimeout(trigger, useLite ? 12000 + Math.random() * 7000 : 7000 + Math.random() * 6000));
+      timers.push(window.setTimeout(trigger, useLite ? 16000 + Math.random() * 9000 : 7000 + Math.random() * 6000));
     };
 
-    timers.push(window.setTimeout(trigger, useLite ? 4500 : 3000));
+    timers.push(window.setTimeout(trigger, useLite ? 7000 : 3000));
 
     return () => {
       mounted = false;

@@ -34,15 +34,15 @@ export function Rain() {
     };
     window.addEventListener("resize", onResize, { passive: true });
 
-    const drops = Array.from({ length: 8 }, () => ({
+    const drops = Array.from({ length: 5 }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      l: 8 + Math.random() * 14,
-      v: 320 + Math.random() * 220,
-      o: 0.12 + Math.random() * 0.14,
+      l: 8 + Math.random() * 10,
+      v: 260 + Math.random() * 160,
+      o: 0.1 + Math.random() * 0.09,
     }));
 
-    const frameInterval = 1000 / 24;
+    const frameInterval = 1000 / 18;
     let last = performance.now();
     let lastDraw = last;
     let raf = 0;

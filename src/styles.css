@@ -98,15 +98,15 @@
   .font-mono-tech { font-family: 'Share Tech Mono', monospace; }
 
   .text-glow {
-    text-shadow: 0 0 10px oklch(0.78 0.22 145 / 0.8), 0 0 30px oklch(0.78 0.22 145 / 0.5);
+    text-shadow: 0 0 8px oklch(0.78 0.22 145 / 0.62), 0 0 18px oklch(0.78 0.22 145 / 0.28);
   }
 
   .border-glow {
-    box-shadow: 0 0 12px oklch(0.78 0.22 145 / 0.5), inset 0 0 12px oklch(0.78 0.22 145 / 0.15);
+    box-shadow: 0 0 8px oklch(0.78 0.22 145 / 0.32), inset 0 0 8px oklch(0.78 0.22 145 / 0.1);
   }
 
   .border-glow-strong {
-    box-shadow: var(--shadow-ember), inset 0 0 20px oklch(0.78 0.22 145 / 0.2);
+    box-shadow: 0 0 18px oklch(0.78 0.22 145 / 0.26), 0 0 40px oklch(0.78 0.22 145 / 0.14), inset 0 0 10px oklch(0.78 0.22 145 / 0.12);
   }
 
   .mist-bg {
@@ -116,6 +116,37 @@
   .ornate-frame {
     background: var(--gradient-frame);
     padding: 2px;
+  }
+
+  .nft-card-shell {
+    isolation: isolate;
+  }
+
+  .card-aura {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: 118%;
+    height: 104%;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: radial-gradient(circle, oklch(0.78 0.22 145 / 0.24) 0%, oklch(0.78 0.22 145 / 0.12) 34%, transparent 72%);
+    filter: blur(26px);
+    opacity: 0.95;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .card-aura-lite {
+    width: 108%;
+    height: 96%;
+    filter: blur(18px);
+    opacity: 0.78;
+  }
+
+  .nft-card-image {
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 }
 
@@ -140,7 +171,7 @@
   100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
 }
 
-.animate-flicker { animation: flicker 3s infinite ease-in-out; }
+.animate-flicker { animation: flicker 4.4s infinite ease-in-out; }
 .animate-drift { animation: drift 6s infinite ease-in-out; }
 
 @keyframes intro-fade-up {
@@ -217,8 +248,7 @@
 }
 
 .title-fire {
-  animation: title-fire 1.8s ease-in-out infinite;
-  will-change: filter;
+  animation: none;
 }
 
 @keyframes lightning {

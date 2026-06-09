@@ -48,14 +48,18 @@ export function NftCard({
   const imgSize = "w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[420px] md:h-[420px]";
   const frameClass = reducedEffects
     ? "relative ornate-frame rounded-sm border-glow"
-    : "relative ornate-frame rounded-sm border-glow-strong animate-flicker";
+    : "relative ornate-frame rounded-sm border-glow-strong";
 
   return (
     <div
       className="intro-fade-up flex flex-col items-center"
       style={{ animationDelay: `${revealDelayMs}ms` }}
     >
-      <div className="relative">
+      <div className="relative nft-card-shell">
+        <div
+          className={`card-aura ${reducedEffects ? "card-aura-lite" : ""}`}
+          aria-hidden
+        />
         <div className={frameClass}>
           <div className="relative bg-background p-3">
             {["top-1 left-1", "top-1 right-1", "bottom-1 left-1", "bottom-1 right-1"].map(
@@ -70,10 +74,10 @@ export function NftCard({
               loading={priority ? "eager" : "lazy"}
               decoding="async"
               fetchPriority={priority ? "high" : "auto"}
-              className={`siggy-nft ${imgSize} object-cover ${struck ? "nft-struck" : ""}`}
+              className={`siggy-nft nft-card-image ${imgSize} object-cover ${struck ? "nft-struck" : ""}`}
               style={{
                 boxShadow:
-                  "0 0 24px oklch(0.78 0.22 145 / 0.6), 0 0 48px oklch(0.78 0.22 145 / 0.4)",
+                  "0 0 14px oklch(0.78 0.22 145 / 0.24), 0 0 32px oklch(0.78 0.22 145 / 0.14)",
               }}
             />
           </div>
@@ -81,10 +85,10 @@ export function NftCard({
 
         {!reducedEffects && (
           <>
-            <div className="absolute bottom-0 -left-5 pointer-events-none z-10 origin-bottom">
+            <div className="absolute -bottom-1 -left-7 pointer-events-none z-10 origin-bottom">
               <Candle delay={0.2} scale={1} />
             </div>
-            <div className="absolute bottom-0 -right-5 pointer-events-none z-10 origin-bottom">
+            <div className="absolute -bottom-1 -right-7 pointer-events-none z-10 origin-bottom">
               <Candle delay={0.7} scale={1} />
             </div>
           </>
@@ -99,7 +103,7 @@ export function NftCard({
         type="button"
         onClick={onMint}
         disabled={busy || disabled}
-        className="mt-5 w-full max-w-[260px] px-8 py-4 font-display font-black text-xl tracking-[0.3em] text-background bg-primary border-glow-strong overflow-hidden transition-transform duration-150 enabled:hover:scale-[1.02] enabled:active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+        className="mt-5 w-full max-w-[260px] px-8 py-4 font-display font-black text-xl tracking-[0.3em] text-background bg-primary border-glow overflow-hidden transition-transform duration-150 enabled:hover:scale-[1.01] enabled:active:scale-[0.99] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
       >
         {buttonLabel}
       </button>
