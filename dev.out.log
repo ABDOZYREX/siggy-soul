@@ -1,0 +1,12 @@
+
+> dev
+> vite dev --host 127.0.0.1 --port 4173
+
+[2m05:01:27[22m [36m[1m[vite][22m[39m ⬥ Netlify Environment loaded
+[2m05:01:27[22m [36m[1m[vite][22m[39m ⬥ Netlify Middleware loaded. Emulating features: aiGateway, blobs, database, edgeFunctions, environmentVariables, functions, geolocation, headers, images, redirects, static.
+[2m05:01:27[22m [36m[1m[vite][22m[39m ⬥ Netlify 💭 Linking this project to a Netlify site lets you deploy your site, use any environment variables defined on your team and site and much more. Run npx netlify init to get started.
+Port 4173 is in use, trying another one...
+
+  [32m[1mVITE[22m v7.3.5[39m  [2mready in [0m[1m8070[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4174[22m/[39m

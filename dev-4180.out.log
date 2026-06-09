@@ -1,0 +1,28 @@
+
+> dev
+> vite dev --host 127.0.0.1 --port 4180
+
+[2m05:06:14[22m [36m[1m[vite][22m[39m ⬥ Netlify Environment loaded
+[2m05:06:14[22m [36m[1m[vite][22m[39m ⬥ Netlify Middleware loaded. Emulating features: aiGateway, blobs, database, edgeFunctions, environmentVariables, functions, geolocation, headers, images, redirects, static.
+[2m05:06:14[22m [36m[1m[vite][22m[39m ⬥ Netlify 💭 Linking this project to a Netlify site lets you deploy your site, use any environment variables defined on your team and site and much more. Run npx netlify init to get started.
+
+  [32m[1mVITE[22m v7.3.5[39m  [2mready in [0m[1m5453[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4180[22m/[39m
+[vite] connected.
+[2m05:10:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/Candle.tsx[22m
+[2m05:10:50[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/Candle.tsx[22m
+[vite] program reload
+[2m05:10:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/NftCard.tsx[22m
+[2m05:10:50[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/NftCard.tsx[22m
+[2m05:10:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/routes/__root.tsx[22m
+[2m05:10:50[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/styles.css[22m
+[2m05:14:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/Candle.tsx[22m
+[2m05:14:08[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/Candle.tsx[22m
+[vite] program reload
+[2m05:14:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/NftCard.tsx[22m
+[2m05:14:08[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/NftCard.tsx[22m
+[2m05:19:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/Candle.tsx[22m
+[2m05:19:29[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/Candle.tsx[22m
+[2m05:19:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css, /src/styles.css?direct, /src/components/NftCard.tsx[22m
+[2m05:19:45[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/NftCard.tsx[22m
