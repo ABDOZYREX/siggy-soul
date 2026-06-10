@@ -400,7 +400,7 @@ export function SignatureDialog() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="justify-self-center px-5 py-2 font-mono-tech text-xs uppercase tracking-[0.38em] text-primary border border-primary/60 bg-background/40 transition-colors hover:bg-primary/10"
+        className="justify-self-center w-full max-w-[200px] px-3 py-2 font-mono-tech text-[10px] uppercase tracking-[0.22em] whitespace-nowrap text-primary border border-primary/60 bg-background/40 transition-colors hover:bg-primary/10 sm:w-auto sm:max-w-none sm:px-5 sm:text-xs sm:tracking-[0.38em]"
         style={{
           boxShadow:
             "0 0 12px oklch(0.78 0.22 145 / 0.32), inset 0 0 18px oklch(0.78 0.22 145 / 0.08)",

@@ -180,30 +180,85 @@ function Index() {
       {!reducedEffects && <Rain />}
       <Lightning lite />
 
-      <header className="relative z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-6 py-6 md:px-12">
-        <div className="flex items-center gap-3 justify-self-start min-w-0">
-          <img
-            src={ritualLogo}
-            alt="Ritual logo"
-            width={24}
-            height={24}
-            className="w-6 h-6 rounded-full bg-transparent"
-            style={{ filter: "drop-shadow(0 0 6px oklch(0.78 0.22 145 / 0.9))" }}
-          />
-          <span className="font-mono-tech text-lg md:text-xl text-primary text-glow tracking-[0.5em] uppercase leading-none">
-            R I T U A L
-          </span>
+      <header className="relative z-20 flex flex-col gap-3 px-3 py-4 sm:px-4 md:grid md:grid-cols-[1fr_auto_1fr] md:px-12 md:py-6">
+        <div className="flex w-full items-center justify-between gap-3 md:contents">
+          <div className="flex min-w-0 items-center gap-2 md:justify-self-start md:justify-start">
+            <img
+              src={ritualLogo}
+              alt="Ritual logo"
+              width={24}
+              height={24}
+              className="w-6 h-6 rounded-full bg-transparent"
+              style={{ filter: "drop-shadow(0 0 6px oklch(0.78 0.22 145 / 0.9))" }}
+            />
+            <span className="whitespace-nowrap font-mono-tech text-xs text-primary text-glow uppercase leading-none tracking-[0.28em] sm:text-lg md:hidden">
+              Ritual
+            </span>
+            <span className="hidden whitespace-nowrap font-mono-tech text-xl text-primary text-glow tracking-[0.5em] uppercase leading-none md:inline">
+              R I T U A L
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 md:justify-self-end md:justify-end md:gap-3">
+            <AudioToggle />
+            <div className="md:hidden">
+              <ConnectButton.Custom>
+                {({ mounted, account, chain, authenticationStatus, openAccountModal, openChainModal, openConnectModal }) => {
+                  const ready = mounted && authenticationStatus !== "loading";
+                  const connected =
+                    ready &&
+                    account &&
+                    chain &&
+                    (!authenticationStatus || authenticationStatus === "authenticated");
+
+                  if (!connected) {
+                    return (
+                      <button
+                        type="button"
+                        onClick={openConnectModal}
+                        className="rounded-md border border-primary/70 bg-primary px-3 py-2 font-sans text-sm font-semibold text-black shadow-[0_0_18px_oklch(0.78_0.22_145_/_0.35)] transition-colors hover:bg-primary/90"
+                      >
+                        Connect
+                      </button>
+                    );
+                  }
+
+                  if (chain.unsupported) {
+                    return (
+                      <button
+                        type="button"
+                        onClick={openChainModal}
+                        className="rounded-md border border-destructive/60 bg-destructive/20 px-3 py-2 font-sans text-sm font-semibold text-destructive"
+                      >
+                        Network
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <button
+                      type="button"
+                      onClick={openAccountModal}
+                      className="rounded-md border border-primary/70 bg-primary px-3 py-2 font-sans text-sm font-semibold text-black shadow-[0_0_18px_oklch(0.78_0.22_145_/_0.35)] transition-colors hover:bg-primary/90"
+                    >
+                      Wallet
+                    </button>
+                  );
+                }}
+              </ConnectButton.Custom>
+            </div>
+            <div className="hidden md:block">
+              <ConnectButton
+                chainStatus="icon"
+                accountStatus={{ smallScreen: "avatar", largeScreen: "full" }}
+                showBalance={false}
+              />
+            </div>
+          </div>
         </div>
 
-        <SignatureDialog />
-
-        <div className="flex items-center gap-3 justify-self-end">
-          <AudioToggle />
-          <ConnectButton
-            chainStatus="icon"
-            accountStatus={{ smallScreen: "avatar", largeScreen: "full" }}
-            showBalance={false}
-          />
+        <div className="flex justify-center md:col-start-2 md:row-start-1">
+          <SignatureDialog />
         </div>
       </header>
 

@@ -127,13 +127,13 @@ export function AudioToggle() {
       type="button"
       onClick={toggle}
       aria-label={enabled ? "Mute soundtrack" : "Play soundtrack"}
-      className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-primary/70 bg-background/60 text-primary border-glow hover:bg-primary/10 transition-colors"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/70 bg-background/60 text-primary border-glow transition-colors hover:bg-primary/10 sm:h-10 sm:w-10"
       style={{
         boxShadow:
           "0 0 12px oklch(0.78 0.22 145 / 0.7), 0 0 24px oklch(0.78 0.22 145 / 0.4)",
       }}
     >
-      {enabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+      {enabled ? <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" />}
     </button>
   );
 }
