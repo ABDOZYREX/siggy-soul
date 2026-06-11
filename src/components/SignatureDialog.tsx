@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Check, Download, Share2, Signature, Sparkles } from "lucide-react";
@@ -66,6 +66,13 @@ function loadImage(src: string) {
   });
 }
 
+let paperPreloadPromise: Promise<HTMLImageElement> | null = null;
+
+function preloadPaperImage() {
+  paperPreloadPromise ??= loadImage(PAPER_SRC);
+  return paperPreloadPromise;
+}
+
 export function SignatureDialog() {
   const { address, isConnected } = useAccount();
   const { sendTransaction, isPending: isSending } = useSendTransaction();
@@ -75,7 +82,6 @@ export function SignatureDialog() {
   const [confirmedName, setConfirmedName] = useState("");
   const [hasDrawnSignature, setHasDrawnSignature] = useState(false);
   const [paymentHash, setPaymentHash] = useState<`0x${string}` | undefined>(undefined);
-  const [paperCacheBust, setPaperCacheBust] = useState(() => Date.now());
   const [paperLoaded, setPaperLoaded] = useState(false);
   const [sealedPreviewUrl, setSealedPreviewUrl] = useState<string | null>(null);
   const [signatureSnapshotUrl, setSignatureSnapshotUrl] = useState<string | null>(null);
@@ -88,21 +94,30 @@ export function SignatureDialog() {
   const drawingRef = useRef(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
 
-  const activePaperSrc = useMemo(
-    () => `${PAPER_SRC}?v=${paperCacheBust}`,
-    [paperCacheBust],
-  );
-
   const nameConfirmed = confirmedName.length > 0;
   const signatureReady = hasDrawnSignature;
   const ritualReady = nameConfirmed && signatureReady;
   const ritualSealed = isPaymentConfirmed;
 
   useEffect(() => {
-    if (!open) return;
-    setPaperCacheBust(Date.now());
-    setPaperLoaded(false);
-  }, [open]);
+    let cancelled = false;
+
+    void preloadPaperImage()
+      .then(() => {
+        if (!cancelled) {
+          setPaperLoaded(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          toast.error("Paper preview failed to load.");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!open || !paperLoaded) return;
@@ -196,7 +211,6 @@ export function SignatureDialog() {
   const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
     if (!nextOpen) {
-      setPaperLoaded(false);
       resetAll();
     }
   };
@@ -277,7 +291,7 @@ export function SignatureDialog() {
   };
 
   const buildExportCanvas = async () => {
-    const paper = await loadImage(activePaperSrc);
+    const paper = await preloadPaperImage();
     const canvas = document.createElement("canvas");
     canvas.width = paper.naturalWidth;
     canvas.height = paper.naturalHeight;
@@ -445,7 +459,7 @@ export function SignatureDialog() {
                     </div>
                   ) : (
                     <img
-                      src={sealedPreviewUrl ?? activePaperSrc}
+                      src={sealedPreviewUrl ?? PAPER_SRC}
                       alt="Sealed Siggy Soul contract"
                       className="mx-auto block h-auto w-full max-w-[440px]"
                     />
@@ -578,8 +592,9 @@ export function SignatureDialog() {
                   <div className="w-full max-w-[560px] rounded-sm border border-primary/25 bg-background/35 p-4 shadow-[0_0_38px_oklch(0.78_0.22_145_/_0.18)]">
                     <div className="relative mx-auto w-full max-w-[440px]">
                       <img
-                        src={activePaperSrc}
+                        src={PAPER_SRC}
                         alt="Siggy Soul contract paper"
+                        fetchPriority="high"
                         loading="eager"
                         decoding="async"
                         onLoad={() => setPaperLoaded(true)}
